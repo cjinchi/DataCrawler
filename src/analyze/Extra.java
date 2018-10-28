@@ -2,18 +2,17 @@ package analyze;
 
 import org.json.JSONObject;
 
-public class Extra {
-    JSONObject data;
+public class Extra extends Data {
 
     public Extra(JSONObject jsonObject) {
-        data = jsonObject;
+        super(jsonObject);
     }
 
     public String getKey() {
-        return data.getString("key");
+        return dataGetString("key");
     }
 
     public String getValue() {
-        return data.getString("value");
+        return dataGetString("value");
     }
 }

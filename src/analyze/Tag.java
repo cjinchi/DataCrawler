@@ -2,31 +2,30 @@ package analyze;
 
 import org.json.JSONObject;
 
-public class Tag {
-    JSONObject data;
+public class Tag extends Data {
 
     public Tag(JSONObject jsonObject) {
-        data = jsonObject;
+        super(jsonObject);
     }
 
     public String getVocabularyId() {
-        return data.getString("vocabulary_id");
+        return dataGetString("vocabulary_id");
     }
 
     public String getState() {
-        return data.getString("state");
+        return dataGetString("state");
     }
 
     public String getDisplayName() {
-        return data.getString("display_name");
+        return dataGetString("display_name");
     }
 
     public String getId() {
-        return data.getString("id");
+        return dataGetString("id");
     }
 
     public String getName() {
-        return data.getString("name");
+        return dataGetString("name");
     }
 
 }

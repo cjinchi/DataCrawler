@@ -6,30 +6,33 @@ import org.json.JSONObject;
 import crawler.CkanCrawler;
 import crawler.Source;
 
-public class Analyzer {
-    JSONObject data;
+public class Analyzer extends Data {
     private Result[] results;
 
     public Analyzer(String info) {
-        if (info != null) {
-            data = new JSONObject(info);
-        }
+        super(info);
     }
 
     public boolean success() {
-        if (data != null && data.getBoolean("success")) {
+        if (!isDataNull() && data.getBoolean("success")) {
             return true;
         } else {
             return false;
         }
     }
 
-    public int getCount() {
-        return data.getJSONObject("result").getInt("count");
+    public Integer getCount() {
+        return Integer.valueOf(data.getJSONObject("result").getInt("count"));
     }
 
     public String getSort() {
-        return data.getJSONObject("result").getString("sort");
+        String key = "sort";
+        JSONObject resultJsonObject = data.getJSONObject("result");
+        if (resultJsonObject.isNull(key)) {
+            return null;
+        } else {
+            return resultJsonObject.getString(key);
+        }
     }
 
     public Result[] getResults() {

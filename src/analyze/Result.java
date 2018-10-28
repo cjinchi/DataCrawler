@@ -3,75 +3,74 @@ package analyze;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class Result {
-    JSONObject data;
+public class Result extends Data {
     Resource[] resources;
     Tag[] tags;
     Organization organization;
     Extra[] extras;
 
     public Result(JSONObject jsonObject) {
-        data = jsonObject;
+        super(jsonObject);
     }
 
     public String getLicenseTitle() {
-        return data.getString("license_title");
+        return dataGetString("license_title");
     }
 
     public String getMaintainer() {
-        return data.getString("maintainer");
+        return dataGetString("maintainer");
     }
 
 //    public JSONArray getRelationshipsAsObject() {
 //        return data.getJSONArray("relationships_as_object");
 //    }
 
-    public boolean getPrivate() {
-        return data.getBoolean("private");
+    public Boolean getPrivate() {
+        return dataGetBoolean("private");
     }
 
     public String getMaintainerEmail() {
-        return data.getString("maintainer_email");
+        return dataGetString("maintainer_email");
     }
 
-    public int getNumTags() {
-        return data.getInt("num_tags");
+    public Integer getNumTags() {
+        return dataGetInt("num_tags");
     }
 
     public String getId() {
-        return data.getString("id");
+        return dataGetString("id");
     }
 
     public String getMetadataCreated() {
-        return data.getString("metadata_created");
+        return dataGetString("metadata_created");
     }
 
     public String getMetadataModified() {
-        return data.getString("metadata_modified");
+        return dataGetString("metadata_modified");
     }
 
     public String getAuthor() {
-        return data.getString("author");
+        return dataGetString("author");
     }
 
     public String getAuthorEmail() {
-        return data.getString("author_email");
+        return dataGetString("author_email");
     }
 
     public String getState() {
-        return data.getString("state");
+        return dataGetString("state");
     }
 
     public String getVersion() {
-        return data.getString("version");
+        return dataGetString("version");
     }
 
     public String getCreatorUserId() {
-        return data.getString("creator_user_id");
+        return dataGetString("creator_user_id");
     }
 
     public String getType() {
-        return data.getString("type");
+        return dataGetString("type");
     }
 
     public Resource[] getResources() {
@@ -85,8 +84,8 @@ public class Result {
         return resources;
     }
 
-    public int getNumResources() {
-        return data.getInt("num_resources");
+    public Integer getNumResources() {
+        return dataGetInt("num_resources");
     }
 
     public Tag[] getTags() {
@@ -101,7 +100,7 @@ public class Result {
     }
 
     public String getLicenseId() {
-        return data.getString("license_id");
+        return dataGetString("license_id");
     }
 
     public Organization getOrganization() {
@@ -112,23 +111,23 @@ public class Result {
     }
 
     public String getName() {
-        return data.getString("name");
+        return dataGetString("name");
     }
 
-    public boolean getIsopen() {
-        return data.getBoolean("isopen");
+    public Boolean getIsopen() {
+        return dataGetBoolean("isopen");
     }
 
     public String getUrl() {
-        return data.getString("url");
+        return dataGetString("url");
     }
 
     public String getNotes() {
-        return data.getString("notes");
+        return dataGetString("notes");
     }
 
     public String getOwnerOrg() {
-        return data.getString("owner_org");
+        return dataGetString("owner_org");
     }
 
     public Extra[] getExtras() {
@@ -143,10 +142,10 @@ public class Result {
     }
 
     public String getTitle() {
-        return data.getString("title");
+        return dataGetString("title");
     }
 
     public String getRevisionId() {
-        return data.getString("revision_id");
+        return dataGetString("revision_id");
     }
 }

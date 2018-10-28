@@ -2,87 +2,86 @@ package analyze;
 
 import org.json.JSONObject;
 
-public class Resource {
-    JSONObject data;
+public class Resource extends Data {
 
     public Resource(JSONObject jsonObject) {
-        data = jsonObject;
+        super(jsonObject);
     }
 
     public String getMimetype() {
-        return data.getString("mimetype");
+        return dataGetString("mimetype");
     }
 
     public String getCacheUrl() {
-        return data.getString("cache_url");
+        return dataGetString("cache_url");
     }
 
     public String getHash() {
-        return data.getString("hash");
+        return dataGetString("hash");
     }
 
     public String getDescription() {
-        return data.getString("description");
+        return dataGetString("description");
     }
 
     public String getName() {
-        return data.getString("name");
+        return dataGetString("name");
     }
 
     public String getFormat() {
-        return data.getString("format");
+        return dataGetString("format");
     }
 
     public String getUrl() {
-        return data.getString("url");
+        return dataGetString("url");
     }
 
-//    public boolean getDatastoreActive() {
-//        return data.getBoolean("datastore_active");
+//    public Boolean getDatastoreActive() {
+//        return dataGetBoolean("datastore_active");
 //    }
 
     public String getCacheLastUpdated() {
-        return data.getString("cache_last_updated");
+        return dataGetString("cache_last_updated");
     }
 
     public String getPackageId() {
-        return data.getString("package_id");
+        return dataGetString("package_id");
     }
 
     public String getCreated() {
-        return data.getString("created");
+        return dataGetString("created");
     }
 
     public String getState() {
-        return data.getString("state");
+        return dataGetString("state");
     }
 
     public String getMimetypeInner() {
-        return data.getString("mimetype_inner");
+        return dataGetString("mimetype_inner");
     }
 
     public String getLastModified() {
-        return data.getString("last_modified");
+        return dataGetString("last_modified");
     }
 
-    public int getPosition() {
-        return data.getInt("position");
+    public Integer getPosition() {
+        return dataGetInt("position");
     }
 
     public String getRevisionId() {
-        return data.getString("revision_id");
+        return dataGetString("revision_id");
     }
 
     public String getUrlType() {
-        return data.getString("url_type");
+        return dataGetString("url_type");
     }
 
     public String getId() {
-        return data.getString("id");
+        return dataGetString("id");
     }
 
     public String getResourceType() {
-        return data.getString("resource_type");
+        return dataGetString("resource_type");
     }
 
 //    public String getSize() {

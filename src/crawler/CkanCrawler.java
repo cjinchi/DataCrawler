@@ -38,7 +38,7 @@ public class CkanCrawler {
         }
     }
 
-    private static String getHttpResponseInformation(String targetUrl) {
+    public static String getHttpResponseInformation(String targetUrl) {
         URLConnection connection;
         try {
             connection = new URL(targetUrl).openConnection();

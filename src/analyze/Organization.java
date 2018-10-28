@@ -2,54 +2,53 @@ package analyze;
 
 import org.json.JSONObject;
 
-public class Organization {
-    JSONObject data;
+public class Organization extends Data {
 
     public Organization(JSONObject jsonObject) {
-        data = jsonObject;
+        super(jsonObject);
     }
 
     public String getDescription() {
-        return data.getString("description");
+        return dataGetString("description");
     }
 
     public String getCreated() {
-        return data.getString("created");
+        return dataGetString("created");
     }
 
     public String getTitle() {
-        return data.getString("title");
+        return dataGetString("title");
     }
 
     public String getName() {
-        return data.getString("name");
+        return dataGetString("name");
     }
 
-    public boolean getIsOrganization() {
-        return data.getBoolean("is_organization");
+    public Boolean getIsOrganization() {
+        return dataGetBoolean("is_organization");
     }
 
     public String getState() {
-        return data.getString("state");
+        return dataGetString("state");
     }
 
     public String getImageUrl() {
-        return data.getString("image_url");
+        return dataGetString("image_url");
     }
 
     public String getRevisionId() {
-        return data.getString("revision_id");
+        return dataGetString("revision_id");
     }
 
     public String getType() {
-        return data.getString("type");
+        return dataGetString("type");
     }
 
     public String getId() {
-        return data.getString("id");
+        return dataGetString("id");
     }
 
     public String getApprovalStatus() {
-        return data.getString("approval_status");
+        return dataGetString("approval_status");
     }
 }
