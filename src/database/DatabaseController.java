@@ -2,17 +2,14 @@ package database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 
-import analyze.Analyzer;
 import analyze.Extra;
 import analyze.Organization;
 import analyze.Resource;
 import analyze.Result;
 import analyze.Tag;
-import crawler.CkanCrawler;
-import crawler.Source;
 
 public class DatabaseController {
     private Connection connection;
@@ -27,13 +24,6 @@ public class DatabaseController {
         }
     }
 
-//    privated
-//
-//    public boolean saveDataset(Result dataset) {
-//        Statement statement = connection.createStatement();
-//        statement
-//    }
-
     public boolean isConnected() {
         return connection != null;
     }
@@ -42,125 +32,182 @@ public class DatabaseController {
         connection.close();
     }
 
-    private String sqlEncoding(String string) {
-        if (string == null) {
-            return "NULL";
-        } else {
-            return String.format("'%s'", string);
-        }
-    }
-
-    private String sqlEncoding(Integer integer) {
-        if (integer == null) {
-            return "NULL";
-        } else {
-            return String.format("%d", integer);
-        }
-    }
-
-    private String sqlEncoding(Boolean var) {
-        if (var == null) {
-            return "NULL";
-        } else {
-            int temp = (var ? 1 : 0);
-            return String.format("%d", temp);
-        }
-    }
-
-    public static void main(String[] args) {
-        DatabaseController dbc = new DatabaseController("root", "", "datasets");
-        if (!dbc.isConnected()) {
-            System.out.println("connect error");
-            return;
-        }
-
-        String info = CkanCrawler.getPackageSearchResponse(Source.OLD_DATAHUB, 1, 0);
-        Analyzer analyzer = new Analyzer(info);
-        Result[] results = analyzer.getResults();
-        for (Result result : results) {
-            dbc.saveDataset(result);
-        }
-
-        try {
-            dbc.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-    }
+//    public static void main(String[] args) {
+//    }
 
     public boolean saveDataset(Result dataset) {
 
+        PreparedStatement statement = null;
+        Organization organization = dataset.getOrganization();
+
         try {
-            Statement statement = connection.createStatement();
+            statement = connection.prepareStatement(
+                    "INSERT INTO metadata VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            statement.setString(1, dataset.getLicenseTitle());
+            statement.setString(2, dataset.getMaintainer());
+            statement.setString(3, dataset.getMaintainerEmail());
+            statement.setString(4, dataset.getId());
+            statement.setString(5, dataset.getMetadataCreated());
+            statement.setString(6, dataset.getMetadataModified());
+            statement.setString(7, dataset.getAuthor());
+            statement.setString(8, dataset.getAuthorEmail());
+            statement.setString(9, dataset.getState());
+            statement.setString(10, dataset.getVersion());
+            statement.setString(11, dataset.getCreatorUserId());
+            statement.setString(12, dataset.getType());
+            statement.setString(13, dataset.getLicenseId());
+            statement.setString(14, dataset.getName());
+            statement.setString(15, dataset.getUrl());
+            statement.setString(16, dataset.getNotes());
+            statement.setString(17, dataset.getOwnerOrg());
+            statement.setString(18, dataset.getTitle());
+            statement.setString(19, dataset.getRevisionId());
+            statement.setString(20, organization.getDescription());
+            statement.setString(21, organization.getCreated());
+            statement.setString(22, organization.getTitle());
+            statement.setString(23, organization.getName());
+            statement.setObject(24, organization.getIsOrganization());
+            statement.setString(25, organization.getState());
+            statement.setString(26, organization.getImageUrl());
+            statement.setString(27, organization.getRevisionId());
+            statement.setString(28, organization.getType());
+            statement.setString(29, organization.getId());
+            statement.setString(30, organization.getApprovalStatus());
+            statement.setObject(31, dataset.getPrivate());
+            statement.setObject(32, dataset.getNumTags());
+            statement.setObject(33, dataset.getNumResources());
+            statement.setObject(34, dataset.getIsopen());
 
-            Organization organization = dataset.getOrganization();
-            String metadataSql = String.format(
-                    "INSERT INTO metadata VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-                    sqlEncoding(dataset.getLicenseTitle()), sqlEncoding(dataset.getMaintainer()),
-                    sqlEncoding(dataset.getMaintainerEmail()), sqlEncoding(dataset.getId()),
-                    sqlEncoding(dataset.getMetadataCreated()), sqlEncoding(dataset.getMetadataModified()),
-                    sqlEncoding(dataset.getAuthor()), sqlEncoding(dataset.getAuthorEmail()),
-                    sqlEncoding(dataset.getState()), sqlEncoding(dataset.getVersion()),
-                    sqlEncoding(dataset.getCreatorUserId()), sqlEncoding(dataset.getType()),
-                    sqlEncoding(dataset.getLicenseId()), sqlEncoding(dataset.getName()), sqlEncoding(dataset.getUrl()),
-                    sqlEncoding(dataset.getNotes()), sqlEncoding(dataset.getOwnerOrg()),
-                    sqlEncoding(dataset.getTitle()), sqlEncoding(dataset.getRevisionId()),
-                    sqlEncoding(organization.getDescription()), sqlEncoding(organization.getCreated()),
-                    sqlEncoding(organization.getTitle()), sqlEncoding(organization.getName()),
-                    sqlEncoding(organization.getIsOrganization()), sqlEncoding(organization.getState()),
-                    sqlEncoding(organization.getImageUrl()), sqlEncoding(organization.getRevisionId()),
-                    sqlEncoding(organization.getType()), sqlEncoding(organization.getId()),
-                    sqlEncoding(organization.getApprovalStatus()), sqlEncoding(dataset.getPrivate()),
-                    sqlEncoding(dataset.getNumTags()), sqlEncoding(dataset.getNumResources()),
-                    sqlEncoding(dataset.getIsopen()));
-            statement.execute(metadataSql);
-
-            Resource[] resources = dataset.getResources();
-            for (Resource resource : resources) {
-                String resourceSql = String.format(
-                        "INSERT INTO resource VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
-                        sqlEncoding(dataset.getId()), sqlEncoding(resource.getMimetype()),
-                        sqlEncoding(resource.getCacheUrl()), sqlEncoding(resource.getHash()),
-                        sqlEncoding(resource.getDescription()), sqlEncoding(resource.getName()),
-                        sqlEncoding(resource.getFormat()), sqlEncoding(resource.getUrl()),
-                        sqlEncoding(resource.getCacheLastUpdated()), sqlEncoding(resource.getPackageId()),
-                        sqlEncoding(resource.getCreated()), sqlEncoding(resource.getState()),
-                        sqlEncoding(resource.getMimetypeInner()), sqlEncoding(resource.getLastModified()),
-                        sqlEncoding(resource.getPosition()), sqlEncoding(resource.getRevisionId()),
-                        sqlEncoding(resource.getUrlType()), sqlEncoding(resource.getId()),
-                        sqlEncoding(resource.getResourceType()), sqlEncoding(Boolean.FALSE));
-                statement.execute(resourceSql);
-            }
-
-            Tag[] tags = dataset.getTags();
-            for (Tag tag : tags) {
-                String tagSql = String.format("INSERT INTO tag VALUES (%s,%s,%s,%s,%s,%s)",
-                        sqlEncoding(dataset.getId()), sqlEncoding(tag.getVocabularyId()), sqlEncoding(tag.getState()),
-                        sqlEncoding(tag.getDisplayName()), sqlEncoding(tag.getId()), sqlEncoding(tag.getName()));
-                statement.execute(tagSql);
-            }
-
-            Extra[] extras = dataset.getExtras();
-            for (Extra extra : extras) {
-                String extraSql = String.format("INSERT INTO extra VALUES (%s,%s,%s)", sqlEncoding(dataset.getId()),
-                        sqlEncoding(extra.getKey()), sqlEncoding(extra.getValue()));
-                statement.execute(extraSql);
-            }
-
-            connection.commit();
-            return true;
-
+            statement.executeUpdate();
         } catch (SQLException e) {
             try {
                 connection.rollback();
             } catch (SQLException e1) {
-                e1.printStackTrace();
                 throw new RuntimeException("Error when database rollback");
             }
             e.printStackTrace();
+            return false;
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                }
+            }
         }
-        return false;
+
+        Resource[] resources = dataset.getResources();
+        for (Resource resource : resources) {
+            try {
+                statement = connection
+                        .prepareStatement("INSERT INTO resource VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                statement.setString(1, dataset.getId());
+                statement.setString(2, resource.getMimetype());
+                statement.setString(3, resource.getCacheUrl());
+                statement.setString(4, resource.getHash());
+                statement.setString(5, resource.getDescription());
+                statement.setString(6, resource.getName());
+                statement.setString(7, resource.getFormat());
+                statement.setString(8, resource.getUrl());
+                statement.setString(9, resource.getCacheLastUpdated());
+                statement.setString(10, resource.getPackageId());
+                statement.setString(11, resource.getCreated());
+                statement.setString(12, resource.getState());
+                statement.setString(13, resource.getMimetypeInner());
+                statement.setString(14, resource.getLastModified());
+                statement.setObject(15, resource.getPosition());
+                statement.setString(16, resource.getRevisionId());
+                statement.setString(17, resource.getUrlType());
+                statement.setString(18, resource.getId());
+                statement.setString(19, resource.getResourceType());
+                statement.setObject(20, Boolean.FALSE);
+
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    throw new RuntimeException("Error when database rollback");
+                }
+                e.printStackTrace();
+                return false;
+            } finally {
+                if (statement != null) {
+                    try {
+                        statement.close();
+                    } catch (SQLException e) {
+                    }
+                }
+            }
+        }
+
+        Tag[] tags = dataset.getTags();
+        for (Tag tag : tags) {
+            try {
+                statement = connection.prepareStatement("INSERT INTO tag VALUES (?,?,?,?,?,?)");
+
+                statement.setString(1, dataset.getId());
+                statement.setString(2, tag.getVocabularyId());
+                statement.setString(3, tag.getState());
+                statement.setString(4, tag.getDisplayName());
+                statement.setString(5, tag.getId());
+                statement.setString(6, tag.getName());
+
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    throw new RuntimeException("Error when database rollback");
+                }
+                e.printStackTrace();
+                return false;
+            } finally {
+                if (statement != null) {
+                    try {
+                        statement.close();
+                    } catch (SQLException e) {
+                    }
+                }
+            }
+        }
+
+        Extra[] extras = dataset.getExtras();
+        for (Extra extra : extras) {
+
+            try {
+                statement = connection.prepareStatement("INSERT INTO extra VALUES (?,?,?)");
+
+                statement.setString(1, dataset.getId());
+                statement.setString(2, extra.getKey());
+                statement.setString(3, extra.getValue());
+
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                try {
+                    connection.rollback();
+                } catch (SQLException e1) {
+                    throw new RuntimeException("Error when database rollback");
+                }
+                e.printStackTrace();
+                return false;
+            } finally {
+                if (statement != null) {
+                    try {
+                        statement.close();
+                    } catch (SQLException e) {
+                    }
+                }
+            }
+        }
+
+        try {
+            connection.commit();
+        } catch (SQLException e) {
+            throw new RuntimeException("Error when database commit");
+        }
+
+        return true;
 
     }
 
